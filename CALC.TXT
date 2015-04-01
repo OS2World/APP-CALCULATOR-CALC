@@ -1,0 +1,561 @@
+Product created May 1992. 
+Documentation updated March 2001.
+Author's current  address: Daniel Hellerstein, ERS/RED, 
+                                   danielh@ers.usda.gov
+                                    202 694 5613
+
+
+                                     CALC:  An On-line Calculator for PCs.
+
+
+     CALC is a sophisticated calculator program for IBM-PCs and compatibles.
+CALC has an intuitive user-interface, permitting quick entry of equations.
+Furthermore, CALC has a number of useful features, including:  on-line help,
+the ability to define variables and functions, the capacity to write results
+to an output file, the ability to compute (and simplify) analytic derivatives
+of user-defined functions, and an interface to the WordPerfect 5.1 equation
+editor.
+
+
+Examples:
+
+? 10.5 * (3^(10/3))                 -- user input
+  10.5 * (3^(10/3)) == 408.877      -- output from CALC
+? A=(SIN(45)/45)*(ln(45))
+  A:== 0.59816
+? F(X) = (x^2)/ exp(x)
+  Function :: F(X) = (X^2)/ EXP(X)
+? F(3)
+  F(3) == .448084
+? /DERIV F
+  dF  / dX  = F'  ==>
+  F'(X) = (((( 2*X))*EXP(X))-((X^ 2)*(EXP(X))))/(EXP(X)^ 2)
+? F'(1)
+  F'(1) == .367879
+? /SIMP F' F'S
+? /FUN F'S
+  F'S(X) = ( 2*(X*EXP(X))-((X^ 2)*EXP(X)))/(EXP(X)^ 2)
+? /FUN F'S WP FS.EQ
+  Funtion: F'S         , written (for WP 5.1 equation editor) to FS.EQ
+
+
+
+
+                                           Installation Instructions
+
+      There are 3 versions of CALC: a small version (CALCS.EXE), a medium
+sized version (CALCM.EXE) and full-scale version (CALC.EXE).  The smaller
+versions do not support the full set of CALC features, but they are useful if
+disk-space is limited, or if you would like to run CALC at the same time as
+some other program.
+
+        After deciding which version(s) of CALC you want, simply copy them to
+your utilities subdirectory.  To run CALC, just enter CALC (or CALCS or CALCM)
+from the DOS prompt; no special installation program need be executed.
+
+      If you are WordPerfect 5.1 user, you should also copy the CVTCALC.WPM
+macro to your WP 5.1 Macros subdirectory.  This macro facilitates the use of
+the WP 5.1 equation editor as a means of displaying CALC output.
+
+     Upon running CALC, if extraneous characters (such as [0m)) appear on
+your screen, you need to install ANSI.SYS.  This can be done by including the
+statement DEVICE=ANSI.SYS in your CONFIG.SYS file.
+
+                                                 Introduction
+
+        CALC has a number of useful features, including:
+
+         Up to 100 variables may be saved.
+         Variables can be freely inserted into equations.
+         25 intrinsic functions, such as SIN and LOG, are available.
+         User defined functions can be created and used.
+         Analytic derivative of any user defined function can be derived.
+         User defined functions, such as derivatives, can be simplified.
+         Output can be exported to the WordPerfect 5.1 equation editor.
+         Extensive on-line help.
+
+     To use CALC, simply enter the equation you want to analyze; then hit
+the ENTER key. For example:
+
+      ? 9,000-(8.9E01*-2)/3.                         (user input)
+      9,000-(8.9E01*-2)/3. == 9059.33333           (output from computer)
+
+         (The question mark is the CALC prompt, and is used in the examples
+          throughout this documentation to indicate "input from user").
+
+      Alternatively, if you only need to perform a single calculation, you can
+evaluate an equation directly from the DOS command line.  For example:
+        C:>CALC 100+(6*9)
+will return:
+          100 + (6*9) = 154
+
+
+      This document describes the features of CALC.  Much of this material is
+also available in the on- line help, which can be accessed from CALC by
+striking the F1 function key.
+
+Note:  To exit CALC, hit the ESC key, or hit the F3 key and then the ENTER
+       key.
+
+
+                                                Basic Features
+
+Entry of numbers.
+
+         Numbers can be entered as real, integer or exponential notation
+         (integers will be converted to real numbers).  Commas may be
+         inserted (if desired) without having any effect on the
+         number.  For example, the following entries have the same
+         value:
+                 9000.0  : 9000  :  9.0E+03   : 9,000.00 : 9,000
+
+Precedence of math operators.
+
+        In increasing order, the precedence of math operators is:
+
+     + and - ; *, / and % ; ** or ^ ; functions ; negative sign ; parenthesis.
+
+      Where:
+             *  stands for multiplication: 4*7=28.
+           %  stands for the mod operation: 14 % 6 = 2.
+             ^ (or **) stand for exponentiation: 3^3 = 27.
+
+        Example: 5 - 3+exp(5)^2 * -X ^ 3 + 6/9*5  is interpreted as:
+              (5-  3) + ( (exp(5)^2) * ((-X)^ 3) ) ) +  ((6/9)*5)
+
+       If no math operator is given, then multiplication is implicitly assumed.
+       Example: 9 (x-8) + 11.3X is equivalent to (9*(x-8)) + (11.3*X).
+
+       Caution: When using the E variable (see below), this
+                    "implicit multiplication" may not work.
+        Example: 5E-03 is interpreted as 0.00500, and not as (5*E)-3.
+
+        Implicit multiplication is not fully supported in CALCS.
+
+Variables.
+
+        Variables are created with the following syntax: VarName = equation.
+
+        Example: ? X1=98 - 2 (SIN(45) - .2)
+
+        The variable name can be up to 12 characters long.  Alphabetics,
+        digits, the apostrophe ( ' ), and the underscore ( _ ) are allowed
+        characters.
+
+        Example: VAR_1'
+
+        There are two permanent variables: PI (3.141593) and E (2.718282).
+
+        Special feature: To save the most recently computed value, use:
+             ? VARNAME=/S
+
+        Example:?  8*exp(3)/pi    (CALC returns the value 51.147398)
+                   ?  TMPVAL=/S   (a variable with the name of TMPVAL
+                        will be created and  assigned a value of 51.147398).
+
+
+Permanent Functions.
+
+        The following functions are supported:
+          SIN   COS   TAN   ARCSIN  ARCCOS  ARCTAN
+          SINH  COSH  TANH
+          EXP   EXP10     LOG (or LN)    LOG10
+          ABS   INT   SQRT  RADTODEG  DEGTORAD   FACT
+
+        The trigonometric functions (SIN through ARCTAN) work either in
+        degrees or radians.  To specify degrees, enter SIND, COSD, etc.  To
+        specify radians, enter SINR, COSR, etc.  If you SIN, COS, etc.
+        (without the D or R modifier), the "default trigonometric" type is
+        assumed (see below for how to set default trigonometric type).
+
+        SINH, COSH, and TANH refer to the hyperbolic functions.
+
+        FACT is the factorial function (FACT(5)=5*4*3*2*1).  RADTODEG
+        converts radians to degrees, DEGTORAD converts degrees to radians.
+        ABS returns the absolute value, INT truncates the decimal component
+        of a real number.  LOG (or LN) returns the natural logarithm, while
+        LOG10 returns the base-10 logarithm.
+
+
+
+User-Functions (not available in CALCS).
+
+        Up to 34 user-functions can be created and saved.  The syntax for
+        creating user-functions is:
+
+        FunctionName(ArgumentName)=Equation
+
+        where FunctionName and ArgumentName can be up to 12 characters long.
+
+        The definition of a user-function (its equation) can reference
+        variables and previously defined user-functions.  Variables need
+        not have been defined, if they do not exist they will be created
+        and assigned a value of zero.  When you use a user function, the
+        argument can consist of any valid equation, which may include other
+        user-functions.
+
+        Example:         ? F1(X)=ABS(X*33-100)+2 + VAR1
+                         ? VAR1=10 + LN(10)
+                         ? GDX2(ZY)= SIN(ZY) + F1(ZY^2/3) /F1(VAR1)
+                         ? VAR2=GDX2(3+F1(3)) - F1(F1(3) - 3)
+
+
+                                                Special Features
+
+Continuation Lines       (not available in CALCS).
+        If your equation will not fit on one line, put a ! at the end of
+        the line.  You will then be prompted for the "continuation" of
+        the equation. Example:
+          ? X1 =  123 -515 + 151 ( 124 - sin(3) ) !
+      :More!?   + 100 * ln(PI*X0)
+
+Parenthesis.
+
+        The three types of  parentheses, "(", "{", and "[", can be freely
+        mixed.  { and [ will be converted to (, ] and } will be converted
+        to ).
+
+Temporary Exit to DOS.
+
+       To temporarily exit to DOS, hit the Cntl-E key at the CALC prompt
+       (the ?).  After you enter one DOS command, you will be returned to CALC.
+
+On-line Equation Editing           (not available in CALCS).
+
+        While entering an equation, one can use the left and right arrow
+        keys, and the Home, End, Delete, and Ins keys.  Ins toggles between
+        typeover and insert mode.  To indicate which mode is currently
+        active, a block (signifying insert mode) or a vertical bar
+        (signifying typeover mode) will briefly appear.
+
+        A history command, modeled after the DOSKEY feature of DOS 5.0, is
+        also available.  The Up and Down arrows will recall, and display on
+        the input line, up to 20 of your prior entries to CALC (10 in
+        CALCM).  Alternatively, the PgUp and PgDn keys can be used, with
+        prior entries scrolled up the screen rather then overwritten.
+
+Precision and Memory Requirements.
+
+        CALC uses double precision (64 bit) arithmetic, with a maximum
+        value of 1.0E+300 permitted.  For functions, the maximum value of
+        the arguments are:  SIN, etc.= 1.0e10; Factorial = 169 (negative
+        numbers and non-integers are not allowed); and Exp = 750.
+
+        Each equation can contain up to 600 characters.  Up to 100
+        variables and 34 user-functions can be active at the same time.
+        CALC sets aside memory for 6000 "equation nodes" (1400 in CALCM)
+        that are used to store user-functions.  Note that an equation node
+        is not equivalent to a character in an equation (each occurence of
+        a variable, function name, value, and math operator occupies one
+        equation node).
+
+        If you use up all the available memory, or exceed the number of
+        permitted variables (or user- functions) a message to that effect
+        will appear.  To free up memory (or remove unneeded user- functions
+        and variables), use /INIT (see below). Switches and Advanced
+        Features.
+
+        Certain commands are "switches" that are used to set defaults,
+        initialize variables, and invoke advanced features.  Note that the
+        advanced features (DERIV, SUM and SIMPLIFY) are not available in
+        CALCM and CALCS.
+
+        The following lists these switches.  Switches can be "turned on"
+        either by entering the name (always preceded by a / character), or
+        in some cases by hitting a function key.  Note that [xx] signifies
+        optional arguments.
+
+Fkey   Switch Name             Short Description
+
+    /INIT  [option1 option2]      :: Initialize, and set various CALC options
+    /DEFINE                       :: ReDefine ALL user-defined variables
+    /RADIANS                      :: Set default trigonometric type to radians.
+    /DEGREES                      :: Set default trigonometric type to degrees.
+    /VAR   [varname] :            :: List a  variable and its value.
+F2  /FUN [FuncName WP WPName] :: Display a function (CALC or WP mode)
+F5  /OUT  [file.ext]              :: Send output to a ".LST" file.
+F6  /IN  [file.ext]               :: Read equations from an input file
+F7  /DERIV [function newname] :: Compute derivative of a  user function.
+F8  /SUM  n1 .. nN                :: Sum a list of numbers & terms
+F9  /SIMPLIFY [function newname] :: Simplify a function
+
+
+/INIT [option1 option2]           (not available in CALCS).
+
+        /INIT is used to initialize a variety of CALC options, and to free
+        up memory.  Several options are available under /INIT.  Option1 can
+        be one of the following (if no option1 is given, you will be asked
+        to select one):
+            ALL  == Removes all functions and variables.
+            FUN  == Removes selected functions.
+            VAR  == Removes selected variables
+            SIMP == Sets parameters that control the extent of simplification.
+            FMT  == Set parameters that control appearance of output.
+                           (for CALCS and CALCM, FMT is a separate switch).
+
+        If FUN (or VAR) is used without option2, a list of currently active
+        user-functions (or variables) is displayed, and you choose whether
+        to retain or remove each function (or variable).  This is
+        especially useful if you run out of memory, or exceed the permitted
+        number of user-functions (or variables).
+
+        There are seven parameters that can be set under SIMP (not
+        available in CALCM).  By default, all options are turned on.  The
+        options are:
+           1) REPeat simplification until no improvement
+           2) REMove extra parenthesis [eg. ((X/4)) ==> (X/4) ].
+           3) MOVe - into parenthesis [eg. -(3-5) ==> (-3+5) ].
+           4) Compute simple MATh [eg. (3+4) ==> 7 ].
+           5) Compute simple FUNctions [eg. (LN(3) ==> 1.09 ].
+           6) Do SIMple algebra [eg. (X*1) ==> X ].
+           7) Do complex ALGebra [eg. ((X*X)/X) ==> X ].
+
+
+        FMT is used to control how output will be displayed.  There are
+        four options under FMT (iv is not available in CALCM)
+        i)       Use exponential notation. Example: 0.12E-02 instead of
+                 0.0012.
+        ii)       Number of digits to right of decimal point.  Note that if
+                  a number has an integer value, it
+                 will be written without a decimal point.
+        iii)      Number of character to use when displaying functions (see
+                 /FUN below).
+        iv)      Whether to use the MATRIX command when displaying
+                 functions with WP 5.1 style (see /FUN below).
+
+        Example:         ? /INIT SIM REP     (toggles the REPeat
+                                               simplification option)
+                         ? /INIT FUN F1      (removes the F1 user-function)
+
+/DEFINE                           (not available in CALCS)
+
+        /DEFINE is used to quickly assign values to all currently defined
+        user-variables.  The current value of each variable is displayed,
+        and the user can then change its value, or retain the current
+        value.
+
+/RADIANS and /DEGREES             (not available in CALCS).
+
+        Set the type of all future invocations of "generic" trigonometric
+        functions.  A generic trigonometric function lacks a R or D; for
+        example, SIN is the generic version of SIND and SINR.  Note that
+        previously created user-defined functions that access these
+        "generic" trigonometric functions are not effected by these
+        commands.  In fact, in the function definition, SIN, etc.  are
+        replaced with SIND, etc.  (or SINR, etc.), depending on whether
+        RADIANS or DEGREES was selected at the time the equation was
+        specified.  The default is DEGREES.
+
+/VAR [varname]
+
+        /VAR will display the value of a variable.  If no [varname] is
+        given, the value of all variables will be displayed.
+
+
+/FUN [FuncName WP WpName] (not available in CALCS).
+
+        /FUN will display the current user-defined functions (the equation
+        will be displayed).  If no [FuncName] is given, then all the
+        user-defined functions are displayed.  If FuncName is given, the
+        entire function is displayed.  When it is not given, only the first
+        K characters of each function are displayed, where K is set under
+        the FMT option of /INIT.  By default, K is equal to 40.  Note that
+        the maximum characters that can be displayed, per function, is 4500
+        (1000 in CALCM).
+
+        When the entire function can not be displayed, a flashing >>
+        character will appear at the far right of the screen.
+
+        The optional [WP WpName] arguments (not available in CALCM) are
+        used to instruct CALC to create WP 5.1 equation editor style output
+        and send it to a file with the name WpName.
+
+        These "WP_style" files contains special commands that are used by the
+        WP 5.1 equation editor to prettify the display.  For example,
+        exponents are displayed as superscripts, fractions are displayed
+        with the numerator over denominator (horizontal line in between),
+        parenthesis are correctly sized, and if MATRIX is selected (the
+        default, see /INIT FMT above) elements will be stacked on top of
+        each other to save horizontal space.
+
+        A special macro file (CVTCALC.WPM) is available that facilitates
+        the use of these "WP_style" files by WordPerfect.  To use this
+        macro, after entering WP 5.1, you run the CVTCALC macro (say, by
+        hitting the ALT-F10) key.  You will then be asked to provide a
+        "name of a function file generated by CALC".  You should then
+        provide the name of the "WP_style" file that you created using
+        /FUN.  It is important to remember that if you do not include a
+        path (a drive and/or directory) in your file name, WordPerfect will
+        look in its default document directory for the "function file".  In
+        other words, you will probably need to specify the subdirectory, as
+        well as the name, of the "function file".
+
+        (Note: to use CVTCALC, CVTCALC.WPM  must be installed in
+        WordPerfect macros subdirectory).
+
+        Example 1: ?/FUN F1X WP F1X.LST
+                  (creates a file with the name F1X.LST in your current
+                   directory -- the directory you ran CALC from).
+
+        Example 2: ?/FUN F2X WP \MYDIR\SAMP1.Q
+                  (creates a file with the name SAMP1.Q in the \MYDIR
+                   subdirectory).
+
+
+/OUT [file.ext].
+
+        /OUT will cause all results to be written to an output file, as
+        well as to the screen.  When this "echo to an output file" mode is
+        on, the CALC cursor will be in reverse video rather then bold (this
+        is not true for CALCS).  To stop this echoing, enter /OUT again
+        (without a file.ext).  If you do not provide a filename (in
+        file.ext), you will be asked to supply one.
+
+        When user-function display is requested (using /FUN FuncName), and
+        /OUT is "on", you will be asked whether the output should be in
+        CALC style or WP style (not available in CALCS or CALCM).  CALC
+        style is similar to how CALC equations are entered.  In fact,
+        output generated by /OUT can be used as input to CALC (see /IN
+        below) without modification.  WP style is designed to be read by
+        the WordPerfect (WP) 5.1 equation editor.
+
+
+        While this method of generating WP style output will work, in many
+        circumstances it is recommended that /FUN, with the [FuncName WP
+        WPName] options, be used.  In particular, the /FUN method is
+        designed to generate a file that is usable by the CVTCALC
+        WordPerfect 5.1 macro (CVTCALC automates the generation of
+        WordPerfect equations, using files created by CALC).
+
+        Example:         ? /OUT CALC.LST
+                           ... several calc commands
+                         ? /OUT
+        (the results of the several calc commands will be written
+        to CALC.LST).
+
+/IN [file.ext]                    (not available in CALCS).
+
+        /IN causes input to be read from an input file rather then from the
+        keyboard.  Each line of the input file can be up to 200 characters
+        long, and any single equation can have up to 600 characters in it.
+        Otherwise, all CALC features are permitted (except for the use of
+        /IN).  If you do not provide an input file (file.ext), you will be
+        asked to supply one.
+
+        Example: ? /IN TST.IN,   where TST.IN is a file containing:
+        X1=23
+        /REM This is a sample function
+        FOO(X)=(X/44)*ABS(X1)^2
+        DD=FOO(X1^3.2)
+        PI*DD/5.5
+        EXIT
+
+        Notes:  The EXIT command is the equivalent to ESC (CALC terminates
+        and the the computer is returned to the DOS prompt).  /REM is a
+        "remark" command, the contents of the line are ignored (if /OUT is
+        selected, the contents of the line will be written to the output
+        file).
+
+/DERIV [FuncName NewName]         (not available in CALCM or CALCS).
+
+        /DERIV will take a previously defined function and compute its
+        derivative using repetitive applications of the chain rule.  The
+        results are saved as a separate function user-function.  This new
+        user-function can be accessed just like an ordinary user-defined
+        function (i.e.; one entered by you from the keyboard).
+
+        When the NewName option is not given, a NewName is automatically
+        generated by adding an apostrophe (') to FuncName.  If FuncName is
+        not given, you will be asked for the FuncName and the NewName.
+
+        When a user-function has other user functions embedded within it,
+        the derivatives of these embedded user-functions must be created
+        before you take its own derivative.  Furthermore, the names of
+        these derivatives (of the embedded user-functions) must follow the
+        default (apostrophe appended to the end of the FuncName).
+
+         Example:         ? F(X)=SIN(X)/X^2
+              Function :: F(X)= SIN(X)/(X^2)
+             ? /DERIV F
+             dF   / dX   == F '  ==>
+              : F'(X)= (((COSD(X))*X^2)-(SIND(X)*(2*X)))/((X^2)^2)
+             ? G(X)= F(X^2) + 1/F(X)
+             Function :: G(X)= F(X^2) + 1/F(X)
+             ? /DERIV G
+             dG   / dX   == G '  ==>
+              : G'(X ) = ((F'(X^ 2))*(( 2*X))) + (-((F'(X)))/(F(X)^ 2))
+
+       NOTE: Simplification of the derivative (see /SIMP below) is recommended.
+
+/SUM list                                  (not available in CALCS or CALCM).
+
+       /SUM will add up a list of terms, where each item in the list is
+        separated by a space.
+
+      Example:           /SUM 4 5 EXP(2*PI) 20/SIND(45) 9.5
+        is converted to: 4+5+EXP(2*PI)+20/SIND(45)+9.5 ==  582.276020
+
+
+/SIMP [FuncName newname]          (not available in CALCS or CALCM).
+
+        /SIMP is used to simplify user-defined functions.  /SIMP is
+        especially useful in conjunction with /DERIV, since /DERIV makes no
+        attempt to simplify.  The major use of /SIMP is to improve
+        readability, especially when the simplified function is converted
+        into a WP style output file and read into the WP 5.1 equation
+        editor.
+
+        A variety of options (see /INIT SIMP) controls what methods are
+        used to simplify the equation.  While simplification will usually
+        reduce the complexity of an equation, it may not be complete;
+        visual inspection will often reveal further possibilities for
+        simplification.
+
+        In almost all cases /SIMP will not change the results of an
+        equation.  The only time that simplified functions yield different
+        results from their unsimplifed counterpart is when an implicit
+        divide by zero occurs.  For example, suppose F(X)=(Z2*X)/X is
+        simplified to F_S(X)=Z2; if X=0, F_S(X) returns the value of Z2,
+        while the F(X) returns a divide by zero error.
+
+        If newname is not entered, a name is generated by appending _S to
+        the FuncName.  If FuncName is not entered, you will be asked to
+        supply both a FuncName and a newname.
+
+        Example:         ? F(X)=SIN(X)/X^2
+                         ? /DERIV F
+                         dF   / dX   == F '  ==>
+                         : F'(X)= (((COSD(X))*X^2)-(SIND(X)*(2*X)))/((X^2)^2)
+                         ? /SIMP F'
+                         ? /FUN F'_S
+                         F'_S(X) = (COSD(X)*(X^2)-(2*SIND(X)*X))/(X^4)
+
+        Note: An option can be added before the FuncName to temporarily
+        (for FuncName only) set the simplification options.  These are:
+                 1 ==    REMove extra parenthesis only.
+                 2 ==    REMove extra parenthesis, MOVe negative signs into
+                         parenthesis, and compute MATh.
+                 3 ==    All options on.
+
+        Example: ? /SIMP 2 F FS2
+
+                                                  Disclaimer
+
+     CALC is for the public domain.  If you like it, give it to others.  CALC
+is written in FORTRAN (Microsoft ver.  5.0).  Copies of the source code can be
+obtained by contacting:
+
+        Daniel Hellerstein
+        c/o USDA/ERS/RED
+        1800 M. St. NW
+        Washington, DC 20034
+        (202) 694-5613
+
+(ambitious programmers can use this source code to incorporate CALC into their
+own software packages)
+
+     Although we are confident of the accuracy of this product, we cannot
+assume liability for any consequence of errors in the software.  However, if
+problems do arise, please contact us at the above address.
+
+
